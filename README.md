@@ -10,3 +10,5 @@ What you need and where to get it (if you don't have it already):
 - [MySQL Community Server](http://dev.mysql.com/downloads/) (to hold the WCA export data)
 - A database and user, see the settings section at the start of the tool.
 - [MySQL Connector/Python](http://dev.mysql.com/downloads/connector/python/) (so Python can access the database)
+
+There's a [speedsolving.com thread](http://www.speedsolving.com/forum/showthread.php?49120) about it.
