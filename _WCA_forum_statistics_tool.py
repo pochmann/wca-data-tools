@@ -30,7 +30,7 @@ def update_export():
             return
         there = there.group(0)
 
-        # Update if newer, otherwise mark local as up-to-date
+        # Update if necessary
         if not here or here != there:
             print('updating ...')
             print('  downloading export ' + there + ' ...')
@@ -54,11 +54,13 @@ def update_export():
 def process_statistics():
     print('processing statistics ...')
 
+    # Prepare a note
     cursor.execute('SELECT here FROM export_status')
     export = next(cursor)[0].split('.')[0]
     note = "Using data from [url=https://www.worldcubeassociation.org/results/misc/export.html]" + export + "[/url]" + \
            " and [url=https://github.com/pochmann/WCA-forum-statistics-tool/]Stefan's WCA forum statistics tool[/url]."
 
+    # Process the query in-files
     for infile in glob.glob('*.in'):
         name = os.path.splitext(infile)[0]
         outfile = name + '.out'
