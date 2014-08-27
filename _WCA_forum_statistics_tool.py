@@ -3,10 +3,7 @@
 import glob, os.path, mysql.connector, time, urllib.request, re, sys, subprocess, zipfile, datetime
 
 # MySQL connection settings
-host = 'localhost'
-database = 'wca_export'
-user = 'wca_export'
-password = 'XXX'
+settings = dict(host='localhost', database='wca_export', user='wca_export', password='XXX')
 
 def update_export():
     """If export is missing or not current, download the current one."""
@@ -38,14 +35,17 @@ def update_export():
             print('  unzipping ...')
             zipfile.ZipFile(there).extract('WCA_export.sql')
             print('  importing to database ...')
-            subprocess.call('mysql --default-character-set=utf8 --host=localhost --user=wca_export --password=XXX wca_export < WCA_export.sql', shell=True)
-            here = there
+            command = 'mysql --default-character-set=utf8 --host={host} --user={user} --password={password} {database} < WCA_export.sql'.format(**settings)
+            subprocess.call(command, shell=True)
             print('  creating indexes ...')
             for table in 'Competitions Continents Countries Events Formats Persons Rounds'.split():
                 cursor.execute('ALTER TABLE ' + table + ' ADD INDEX id (id ASC)')
             print('  deleting files ...')
             os.remove(there)
             os.remove('WCA_export.sql')
+
+            # Yup, we did it
+            here = there
 
         # Store the export status
         cursor.execute('DROP TABLE IF EXISTS export_status')
@@ -80,13 +80,14 @@ def process_statistics():
                 for row in cursor:
                     tr = '[TR]'
                     for value in row:
-                        td = '[TD]' if type(value) is str else '[TD="align:right"]'
+                        align_right = type(value) is not str or re.match(r'\d+(\.\d+)?%', value)
+                        td = '[TD="align:right"]' if align_right else '[TD]'
                         tr += td + str(value) + '[/TD]'
                     print(tr + '[/TR]', file=outfile)
                 print('[/TABLE]\n\n[SPOILER="SQL code"]' + query + '[/SPOILER][/SPOILER]', file=outfile)
 
 # Connect to the database
-cnx = mysql.connector.connect(user=user, password=password, host=host, database=database)
+cnx = mysql.connector.connect(**settings)
 cursor = cnx.cursor()
 
 # Do the job
