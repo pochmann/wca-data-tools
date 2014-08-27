@@ -1,0 +1,6 @@
+SELECT Competitions.cellName Competition, Events.cellName Event, group_concat(Persons.name order by pos separator ', ') 'The Ladies'
+FROM Results join Persons on Persons.id = personId join Competitions on Competitions.id = competitionId join Events on Events.id = eventId
+WHERE roundId in ('f', 'c') and pos <= 3 and best > 0
+GROUP BY competitionId, eventId
+HAVING group_concat(distinct gender) = 'f'
+ORDER BY year, month, day

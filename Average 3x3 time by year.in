@@ -1,0 +1,12 @@
+SELECT year, round(sum(seconds)/sum(solves), 2) average, sum(solves) solves
+FROM
+(SELECT
+  competitionId,
+  sum(if(value1>0,value1,0)+if(value2>0,value2,0)+if(value3>0,value3,0)+if(value4>0,value4,0)+if(value5>0,value5,0))/100 seconds,
+  sum((value1>0)+(value2>0)+(value3>0)+(value4>0)+(value5>0)) solves
+FROM Results
+WHERE eventId = '333'
+GROUP BY competitionId) tmp
+JOIN Competitions ON Competitions.id = competitionId
+GROUP BY year
+ORDER BY year;
