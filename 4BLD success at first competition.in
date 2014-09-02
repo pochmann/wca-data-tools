@@ -1,0 +1,5 @@
+SELECT concat(personId, '#444bf') Cuber, date(year*10000+month*100+day) Date
+FROM Results join Competitions on Competitions.id=competitionId
+GROUP BY personId
+HAVING min(year*20000+month*200+day*2-(eventId='444bf' and best>0)) % 2
+ORDER BY Date

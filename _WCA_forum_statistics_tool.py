@@ -60,6 +60,10 @@ def process_statistics():
     note = "Using data from [url=https://www.worldcubeassociation.org/results/misc/export.html]" + export + "[/url]" + \
            " and Stefan's [url=https://github.com/pochmann/wca-statistics-tools/]WCA statistics tools[/url]."
 
+    # Fetch person names for automatically turning person ids into links
+    cursor.execute('SELECT id, name FROM Persons WHERE subId=1')
+    person_name = dict(cursor)
+
     # Process the query in-files
     for infile in glob.glob('*.in'):
         name = os.path.splitext(infile)[0]
@@ -80,6 +84,9 @@ def process_statistics():
                 for row in cursor:
                     tr = '[TR]'
                     for value in row:
+                        if type(value) is str and re.match(r'\d{4}[A-Z]{4}\d\d', value):
+                            personId, anchor = value[:10], value[10:]
+                            value = '[url=https://www.worldcubeassociation.org/results/p.php?i={}{}]{}[/url]'.format(personId, anchor, person_name[personId])
                         align_right = type(value) is not str or re.match(r'\d+(\.\d+)?%', value)
                         td = '[TD="align:right"]' if align_right else '[TD]'
                         tr += td + str(value) + '[/TD]'
