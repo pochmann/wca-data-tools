@@ -77,13 +77,14 @@ def process_statistics():
             query = open(infile).read().strip()
             for result in cursor.execute(query, multi=True):
                 if result.with_rows:
-                    break
+                    column_names = result.column_names
+                    rows = list(result)
 
             # Produce the out-file
             with open(outfile, 'w', encoding='utf8') as outfile:
                 print('[SPOILER="' + name + '"]' + note + '\n\n[TABLE="class:grid,align:left"]', file=outfile)
-                print('[TR][TD][B]' + '[/B][/TD][TD][B]'.join(n for n in result.column_names) + '[/B][/TD][/TR]', file=outfile)
-                for row in result:
+                print('[TR][TD][B]' + '[/B][/TD][TD][B]'.join(n for n in column_names) + '[/B][/TD][/TR]', file=outfile)
+                for row in rows:
                     tr = '[TR]'
                     for value in row:
                         if type(value) is str and re.match(r'\d{4}[A-Z]{4}\d\d', value):
