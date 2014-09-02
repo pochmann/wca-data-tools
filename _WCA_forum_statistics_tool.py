@@ -58,7 +58,7 @@ def process_statistics():
     cursor.execute('SELECT here FROM export_status')
     export = next(cursor)[0].split('.')[0]
     note = "Using data from [url=https://www.worldcubeassociation.org/results/misc/export.html]" + export + "[/url]" + \
-           " and [url=https://github.com/pochmann/WCA-forum-statistics-tool/]Stefan's WCA forum statistics tool[/url]."
+           " and Stefan's [url=https://github.com/pochmann/wca-statistics-tools/]WCA statistics tools[/url]."
 
     # Process the query in-files
     for infile in glob.glob('*.in'):
