@@ -1,9 +1,10 @@
 """ See https://github.com/pochmann/WCA-forum-statistics-tool/ """
 
-import glob, os.path, mysql.connector, time, urllib.request, re, sys, subprocess, zipfile, datetime
+import glob, os.path, mysql.connector, time, urllib.request, re, sys, subprocess, zipfile, datetime, shutil
 
-# MySQL connection settings
-settings = dict(host='localhost', database='wca_export', user='wca_export', password='XXX')
+if not os.path.isfile('config.py'):
+    shutil.copy('config.template.py', 'config.py')
+from config import config
 
 def update_export():
     """If export is missing or not current, download the current one."""
@@ -35,7 +36,7 @@ def update_export():
             print('  unzipping ...')
             zipfile.ZipFile(there).extract('WCA_export.sql')
             print('  importing to database ...')
-            command = 'mysql --default-character-set=utf8 --host={host} --user={user} --password={password} {database} < WCA_export.sql'.format(**settings)
+            command = 'mysql --default-character-set=utf8 --host={host} --user={user} --password={password} {database} < WCA_export.sql'.format(**config['mysql'])
             subprocess.call(command, shell=True)
             print('  creating indexes ...')
             for table in 'Competitions Continents Countries Events Formats Persons Rounds'.split():
@@ -97,7 +98,7 @@ def process_statistics():
                 print('[/TABLE]\n\n[SPOILER="SQL code"]' + query + '[/SPOILER][/SPOILER]', file=outfile)
 
 # Connect to the database
-cnx = mysql.connector.connect(**settings)
+cnx = mysql.connector.connect(**config['mysql'])
 cursor = cnx.cursor()
 
 # Do the job
