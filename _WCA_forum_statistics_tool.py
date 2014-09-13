@@ -65,9 +65,9 @@ def process_statistics():
     person_name = dict(cursor)
 
     # Process the query in-files
-    for infile in glob.glob('*.in'):
-        name = os.path.splitext(infile)[0]
-        outfile = name + '.out'
+    for infile in glob.glob(os.path.join('inout', '*.in')):
+        name = os.path.splitext(os.path.basename(infile))[0]
+        outfile = os.path.join('inout', name + '.out')
 
         # If out-file is missing or older than in-file...
         if not os.path.isfile(outfile) or os.path.getmtime(outfile) < os.path.getmtime(infile):
