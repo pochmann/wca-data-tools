@@ -1,4 +1,4 @@
-""" See https://github.com/pochmann/WCA-forum-statistics-tool/ """
+""" See https://github.com/pochmann/wca-statistics-tools """
 
 import glob, os.path, mysql.connector, time, urllib.request, re, sys, subprocess, zipfile, datetime, shutil
 
