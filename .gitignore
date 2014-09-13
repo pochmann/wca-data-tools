@@ -1,4 +1,4 @@
 /inout/*.out
-zzz_*
+zzz*
 __pycache__
 /config.py
