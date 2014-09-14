@@ -2,6 +2,7 @@
 
 import glob, os.path, mysql.connector, time, urllib.request, re, sys, subprocess, zipfile, datetime, shutil
 
+# Load the configuration (if necessary, create it first)
 if not os.path.isfile('config.py'):
     shutil.copy('config.template.py', 'config.py')
 from config import config
@@ -59,7 +60,7 @@ def process_statistics():
     cursor.execute('SELECT here FROM export_status')
     export = next(cursor)[0].split('.')[0]
     note = "Using data from [url=https://www.worldcubeassociation.org/results/misc/export.html]" + export + "[/url]" + \
-           " and Stefan's [url=https://github.com/pochmann/wca-statistics-tools/]WCA statistics tools[/url]."
+           " and Stefan's [url=https://github.com/pochmann/wca-statistics-tools/]WCA Statistics Tools[/url]."
 
     # Fetch person names for automatically turning person ids into links
     cursor.execute('SELECT id, name FROM Persons WHERE subId=1')
@@ -78,7 +79,7 @@ def process_statistics():
             query = open(infile).read().strip()
             for result in cursor.execute(query, multi=True):
                 if result.with_rows:
-                    column_names = result.column_names
+                    column_names = list(result.column_names)
                     rows = list(result)
 
             # Produce the out-file
@@ -91,11 +92,11 @@ def process_statistics():
                         if type(value) is str and re.match(r'\d{4}[A-Z]{4}\d\d', value):
                             personId, anchor = value[:10], value[10:]
                             value = '[url=https://www.worldcubeassociation.org/results/p.php?i={}{}]{}[/url]'.format(personId, anchor, person_name[personId])
-                        align_right = type(value) is not str or re.match(r'\d+(\.\d+)?%', value)
+                        align_right = type(value) is not str or re.match(r'\d+(\.\d+)?%?$', value)
                         td = '[TD="align:right"]' if align_right else '[TD]'
                         tr += td + str(value) + '[/TD]'
                     print(tr + '[/TR]', file=outfile)
-                print('[/TABLE]\n\n[SPOILER="SQL code"]' + query + '[/SPOILER][/SPOILER]', file=outfile)
+                print('[/TABLE]\n\n[SPOILER="SQL"][CODE]' + query + '[/CODE][/SPOILER][/SPOILER]', file=outfile)
 
 # Connect to the database
 cnx = mysql.connector.connect(**config['mysql'])
