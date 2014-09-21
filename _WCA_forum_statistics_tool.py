@@ -1,11 +1,7 @@
 """ See https://github.com/pochmann/wca-statistics-tools """
 
-import glob, os.path, mysql.connector, time, urllib.request, re, sys, subprocess, zipfile, datetime, shutil
-
-# Load the configuration (if necessary, create it first)
-if not os.path.isfile('config.py'):
-    shutil.copy('config.template.py', 'config.py')
-from config import config
+import glob, os.path, mysql.connector, time, urllib.request, re, sys, subprocess, zipfile, datetime
+from wst import *
 
 def update_export():
     """If export is missing or not current, download the current one."""
@@ -56,16 +52,6 @@ def update_export():
 def process_statistics():
     print('processing statistics ...')
 
-    # Prepare a note
-    cursor.execute('SELECT here FROM export_status')
-    export = next(cursor)[0].split('.')[0]
-    note = "Using data from [url=https://www.worldcubeassociation.org/results/misc/export.html]" + export + "[/url]" + \
-           " and Stefan's [url=https://github.com/pochmann/wca-statistics-tools/]WCA Statistics Tools[/url]."
-
-    # Fetch person names for automatically turning person ids into links
-    cursor.execute('SELECT id, name FROM Persons WHERE subId=1')
-    person_name = dict(cursor)
-
     # Process the query in-files
     for infile in glob.glob(os.path.join('inout', '*.in')):
         name = os.path.splitext(os.path.basename(infile))[0]
@@ -83,20 +69,7 @@ def process_statistics():
                     rows = list(result)
 
             # Produce the out-file
-            with open(outfile, 'w', encoding='utf8') as outfile:
-                print('[SPOILER="' + name + '"]' + note + '\n\n[TABLE="class:grid,align:left"]', file=outfile)
-                print('[TR][TD][B]' + '[/B][/TD][TD][B]'.join(n for n in column_names) + '[/B][/TD][/TR]', file=outfile)
-                for row in rows:
-                    tr = '[TR]'
-                    for value in row:
-                        if type(value) is str and re.match(r'\d{4}[A-Z]{4}\d\d', value):
-                            personId, anchor = value[:10], value[10:]
-                            value = '[url=https://www.worldcubeassociation.org/results/p.php?i={}{}]{}[/url]'.format(personId, anchor, person_name[personId])
-                        align_right = type(value) is not str or re.match(r'\d+(\.\d+)?%?$', value)
-                        td = '[TD="align:right"]' if align_right else '[TD]'
-                        tr += td + str(value) + '[/TD]'
-                    print(tr + '[/TR]', file=outfile)
-                print('[/TABLE]\n\n[SPOILER="SQL"][CODE]' + query + '[/CODE][/SPOILER][/SPOILER]', file=outfile)
+            create_post(infile, column_names, rows)
 
 # Connect to the database
 cnx = mysql.connector.connect(**config['mysql'])
