@@ -4,10 +4,13 @@ import mysql.connector, itertools, operator, re, os.path, shutil
 from collections import *
 from time import time
 
+def __internal(filename):
+    return os.path.join('internal', filename)
+
 # Load the configuration (if necessary, create it first)
-if not os.path.isfile('config.py'):
-    shutil.copy('config.template.py', 'config.py')
-from config import config
+if not os.path.isfile(__internal('config.py')):
+    shutil.copy(__internal('config.template.py'), __internal('config.py'))
+from internal.config import config
 
 #-----------------------------------------------------------------------------
 #   Database stuff
