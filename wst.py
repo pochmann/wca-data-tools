@@ -102,13 +102,14 @@ def create_post(infile, column_names, rows):
     #ctr, rank = 0, None
     with open(os.path.join('inout', name + '.out'), 'w', encoding='utf8') as outfile:
         print('[SPOILER="' + name + '"]' + note + '\n\n[TABLE="class:grid,align:left"]', file=outfile)
-        print('[TR][TD][B]' + '[/B][/TD][TD][B]'.join(n for n in column_names) + '[/B][/TD][/TR]', file=outfile)
+        print('[TR][TD][B]' + '[/B][/TD][TD][B]'.join(n.split('[')[0] for n in column_names) + '[/B][/TD][/TR]', file=outfile)
         for row in rows:
             tr = '[TR]'
             for column_name, value in zip(column_names, row):
                 if type(value) is str and re.match(r'\d{4}[A-Z]{4}\d\d', value):
                     value = re.sub(r'(\d{4}[A-Z]{4}\d\d)([#@]\w+)?', auto_person, value)
                 if value in event_name:
+                    eventId = value
                     value = event_name[value]
                 if value in competition_name:
                     value = competition_name[value]
@@ -117,6 +118,9 @@ def create_post(infile, column_names, rows):
                     # or recognize by turning a result like 142 into a string like 'r:142'?
                     # Or with an instruction in the column name?
                     value = format_value(value)
+                    align_right = True
+                if type(value) is int and '[R]' in column_name:
+                    value = format_value(value, event_format[eventId])
                     align_right = True
                 td = '[TD="align:right"]' if align_right else '[TD]'
                 tr += td + str(value) + '[/TD]'
@@ -146,12 +150,12 @@ def format_multi_value(value):
 
     # Extract the value parts
     if value >= 1000000000:
-        solved = 99 - value / 10000000 % 100
-        attempted = value / 100000 % 100
+        solved = 99 - value // 10000000 % 100
+        attempted = value // 100000 % 100
         time = value % 100000
     else:
-        difference = 99 - value / 10000000
-        time = value / 100 % 100000
+        difference = 99 - value // 10000000
+        time = value // 100 % 100000
         missed = value % 100
         solved = difference + missed
         attempted = solved + missed
@@ -160,14 +164,16 @@ def format_multi_value(value):
     if time == 99999:
         time = '?:??:??'
     elif time < 60 * 60:
-        time = '{}:{:02}'.format(time/60, time%60)
+        time = '{}:{:02}'.format(time//60, time%60)
     else:
-        time = '{}:{:02}:{:02}'.format(time/3600, time/60%60, time%60)
+        time = '{}:{:02}:{:02}'.format(time//3600, time//60%60, time%60)
 
     #--- Combine.
-    return "{}/{}<span class='mt'>{}</span>".format(solved, attempted, time)
+    return "{}/{} ([SIZE=1]{}[/SIZE])".format(solved, attempted, time)
 
 # Fetch person/event/competition names for automatically turning ids into names/links
 person_name = dict(query('SELECT id, name FROM Persons WHERE subId=1'))
 event_name = dict(query('SELECT id, cellName FROM Events'))
 competition_name = dict(query('SELECT id, cellName FROM Competitions'))
+
+event_format = dict(query('SELECT id, format FROM Events'))

@@ -1,0 +1,8 @@
+SELECT eventId Event,
+       best 'Record[R]',
+       group_concat(personId separator ', ') 'Record Holders'
+FROM (SELECT eventId, min(best) best FROM Results WHERE best>0 GROUP by eventId) tmp
+     natural join Results
+     join Events on Events.id = eventId
+GROUP BY Event
+ORDER BY rank;
