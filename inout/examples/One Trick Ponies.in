@@ -1,0 +1,5 @@
+SELECT personId Pony, cellName Trick, count(distinct competitionId) Performances
+FROM Results join Events on Events.id=eventId
+GROUP BY personId
+HAVING Performances>=4 and count(distinct eventId)=1
+ORDER BY Performances desc;

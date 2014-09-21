@@ -1,0 +1,8 @@
+SELECT name Cuber, NRs+5*CRs+10*WRs Score, WRs, CRs, NRs, countryId Country
+FROM
+(SELECT personId, sum(worldRank=1) WRs, sum(continentRank=1 and worldRank>1) CRs, sum(countryRank=1 and continentRank>1) NRs
+FROM (SELECT * FROM RanksSingle UNION ALL SELECT * FROM RanksAverage) tmp
+GROUP BY personId) tmp2
+JOIN Persons on Persons.id = personId and subId = 1
+HAVING score >= 8
+ORDER BY 2 desc;

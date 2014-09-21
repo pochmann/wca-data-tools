@@ -1,0 +1,13 @@
+SELECT personName Cuber, 10*WRs+5*CRs+NRs Score, WRs, CRs, NRs, personCountryId Country
+FROM
+(SELECT
+  personName,
+  personCountryId,
+  sum((regionalSingleRecord='WR')+(regionalAverageRecord='WR')) WRs,
+  sum((regionalSingleRecord like '%R' and regionalSingleRecord not in ('WR','NR'))
+     +(regionalAverageRecord like '%R' and regionalAverageRecord not in ('WR', 'NR'))) CRs,
+  sum((regionalSingleRecord='NR')+(regionalAverageRecord='NR')) NRs
+FROM Results
+GROUP BY personId) tmp
+HAVING Score >= 68
+ORDER BY Score desc, WRs desc, CRs desc, NRs desc;

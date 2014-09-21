@@ -1,0 +1,8 @@
+SELECT winner.competitionId, winner.eventId, winner.personName, round(winner.worst/100, 2) worst, 100*winner.worst/others.best percent
+FROM
+(SELECT competitionId, eventId, personName, greatest(value1,value2,value3,value4,value5) worst FROM Results WHERE roundId in ('f','c') AND pos=1) winner,
+(SELECT competitionId, eventId, min(best) best FROM Results WHERE roundId in ('f','c') AND pos>1 AND best>0 GROUP BY competitionId, eventId) others
+WHERE winner.competitionId = others.competitionId
+  AND winner.eventId = others.eventId
+  AND 3 * worst <= best
+ORDER BY worst/best;

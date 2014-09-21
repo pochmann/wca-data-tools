@@ -1,0 +1,10 @@
+SELECT Country, CompetitionDays, Competitions, round(CompetitionDays/Competitions, 2) DaysPerCompetition
+FROM
+(SELECT
+   countryId Country,
+   sum(datediff(year*10000+endMonth*100+endDay,year*10000+month*100+day)+1) CompetitionDays,
+   count(*) Competitions
+ FROM Competitions
+ WHERE date(year*10000+month*100+day) <= date(now())
+ GROUP BY countryId) tmp
+ORDER BY CompetitionDays desc

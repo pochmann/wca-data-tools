@@ -1,0 +1,8 @@
+SELECT
+  personId Cuber,
+  sum((value1>0)+(value2>0)+(value3>0)+(value4>0)+(value5>0)) Solves,
+  count(distinct eventId) Events
+FROM Results
+GROUP BY personId
+HAVING sum((value1=-1)+(value2=-1)+(value3=-1)+(value4=-1)+(value5=-1)) = 0 and Solves >= 100
+ORDER BY Solves desc, Events desc;

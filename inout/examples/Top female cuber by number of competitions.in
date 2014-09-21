@@ -1,0 +1,6 @@
+SELECT count(distinct competitionId) Competitions, personName Name
+FROM Results, Persons
+WHERE gender='f' AND personId=Persons.id
+GROUP BY personId
+ORDER BY 1 desc
+LIMIT 10

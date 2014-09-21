@@ -1,0 +1,12 @@
+select Persons.name, round(foo%(100*60*60*10)/100,2) time, floor(foo/(100*60*60*10)) number_of_times from (
+select personId, max(number_of_times*100*60*60*10+v) foo from(
+select personId, v, count(*) number_of_times from(
+select personId, value1 v from Results join Events on Events.id=eventId where Events.format='time' and value1>0 union all
+select personId, value2 v from Results join Events on Events.id=eventId where Events.format='time' and value2>0 union all
+select personId, value3 v from Results join Events on Events.id=eventId where Events.format='time' and value3>0 union all
+select personId, value4 v from Results join Events on Events.id=eventId where Events.format='time' and value4>0 union all
+select personId, value5 v from Results join Events on Events.id=eventId where Events.format='time' and value5>0) tmp
+group by personId, v) tmp2
+group by personId
+order by foo desc
+limit 100) tmp3 join Persons on Persons.id=personId;

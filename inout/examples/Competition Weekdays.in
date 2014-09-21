@@ -1,0 +1,6 @@
+SELECT
+  concat(dayname(year*10000+month*100+day), if(day=endDay, '', concat('-', dayname(year*10000+endMonth*100+endDay)))) weekdays,
+  count(*) overall, sum(year=2013) in2013, sum(year=2014) in2014
+FROM Competitions
+GROUP BY weekdays
+order by overall desc

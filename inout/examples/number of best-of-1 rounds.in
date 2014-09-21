@@ -1,0 +1,4 @@
+select eventId, count(distinct competitionId, roundId) rounds, substr(group_concat(distinct competitionId),1,80) competitions
+from results where formatId='1'
+group by eventId
+order by 2 desc;

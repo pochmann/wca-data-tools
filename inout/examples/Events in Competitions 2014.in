@@ -1,0 +1,11 @@
+CREATE TABLE ce2014
+SELECT competitionId, eventId
+FROM (SELECT distinct competitionId, eventId FROM Results) ce join Competitions on Competitions.id=competitionId
+WHERE year=2014;
+
+SELECT eventId Event, concat(round(100*count(competitionId)/comps, 1), '%') Competitions
+FROM ce2014, (SELECT count(distinct competitionId) comps FROM ce2014) tmp
+GROUP BY eventId
+ORDER BY 2 desc;
+
+DROP TABLE ce2014;

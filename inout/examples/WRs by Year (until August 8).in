@@ -1,0 +1,5 @@
+SELECT year Year, sum((regionalSingleRecord='WR')+(regionalAverageRecord='WR')) WRs
+FROM Results JOIN Competitions ON Competitions.id = competitionId
+WHERE (regionalSingleRecord='WR' OR regionalAverageRecord='WR') AND month*100+day<=808
+GROUP BY year
+ORDER BY year;

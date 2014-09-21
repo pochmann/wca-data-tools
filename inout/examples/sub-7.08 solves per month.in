@@ -1,0 +1,7 @@
+SELECT year, month, sum((value1 between 1 and 707)+(value2 between 1 and 707)+(value3 between 1 and 707)+(value4 between 1 and 707)+(value5 between 1 and 707)) sub708s,
+  sum(((value1 between 1 and 707)+(value2 between 1 and 707)+(value3 between 1 and 707)+(value4 between 1 and 707)+(value5 between 1 and 707))*(personId not in ('2009ZEMD01', '2007VALK01'))) noFazOrMats,
+  group_concat(distinct personName separator ', ') who
+FROM Results, Competitions
+WHERE Competitions.id = competitionId
+AND eventId = '333' AND best between 1 and 707
+GROUP BY year, month

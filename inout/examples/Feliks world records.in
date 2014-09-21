@@ -1,0 +1,7 @@
+SELECT competitionId,
+       sum((value1<>0)+(value2<>0)+(value3<>0)+(value4<>0)+(value5<>0)) attempts,
+       sum((regionalSingleRecord='WR')+(regionalAverageRecord='WR')) WRs
+FROM Results
+WHERE personId = '2009ZEMD01'
+GROUP BY competitionId
+ORDER BY attempts desc, WRs desc

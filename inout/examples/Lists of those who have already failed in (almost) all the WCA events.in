@@ -1,0 +1,10 @@
+SELECT Persons.name Cuber, group_concat(if(personId is null,Events.cellName, null) order by Events.id) FailedToFailAt
+FROM
+  (Persons JOIN Events)
+  LEFT JOIN
+  (SELECT distinct personId, eventId FROM Results WHERE -1 in (value1, value2, value3, value4, value5)) tmp
+  ON personId = Persons.id AND eventId = Events.id
+WHERE Events.rank < 990
+GROUP BY Persons.id
+HAVING sum(personId is null) <= 2
+ORDER BY sum(personId is null), Persons.name;

@@ -1,0 +1,8 @@
+SELECT
+  personId Cuber,
+  eventId Event,
+  sum((value1>0)+(value2>0)+(value3>0)+(value4>0)+(value5>0)) Solves
+FROM Results
+GROUP BY personId, eventId
+HAVING Solves >= 700
+ORDER BY solves desc;

@@ -1,0 +1,13 @@
+SELECT
+  year Year,
+  count(*) Competitions,
+  avg(days) 'Average Days',
+  sum(days=1) '1 Day',
+  sum(days=2) '2 Days',
+  sum(days=3) '3 Days',
+  sum(days>3) '>3 Days'
+FROM
+  (SELECT id competitionId, year Year, datediff(year*10000+endMonth*100+endDay,year*10000+month*100+day) + 1 days FROM Competitions) tmp1
+  natural join
+  (SELECT distinct competitionId FROM Results) tmp2
+GROUP BY year;

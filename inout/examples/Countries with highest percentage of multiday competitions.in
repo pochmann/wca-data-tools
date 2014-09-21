@@ -1,0 +1,4 @@
+SELECT countryId Country, sum(endDay<>day)/count(*) 'Multiday[%1]', sum(endDay<>day) Multiday, count(*) 'All'
+FROM Competitions join (SELECT distinct competitionId FROM Results) tmp on id=competitionId
+GROUP BY countryId
+ORDER BY sum(endDay<>day) / count(*) desc, count(*) desc;

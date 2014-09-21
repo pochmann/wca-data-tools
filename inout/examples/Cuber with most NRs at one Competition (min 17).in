@@ -1,0 +1,5 @@
+SELECT concat(personId, '@', competitionId) Cuber, sum((regionalSingleRecord like '%R')+(regionalAverageRecord like '%R')) NRs, personCountryId Country, competitionId Competition
+FROM Results
+GROUP BY personId, competitionId
+HAVING NRs >= 17
+ORDER BY NRs desc;

@@ -1,0 +1,10 @@
+select two.name, single222, avgRank222, pyr.name, singlePyra, avgRankPyra from
+(select @ctr:=@ctr+1 ctr, name, round(s.best/100,2) single222, a.worldRank avgRank222
+from (select @ctr:=0) init, RanksSingle s join RanksAverage a on s.personId = a.personId and s.eventId = a.eventId join Persons p on s.personId = p.id
+where s.eventId = '222' and s.worldRank <= 100
+order by s.worldRank) two,
+(select @ctr2:=@ctr2+1 ctr, name, round(s.best/100,2) singlePyra, a.worldRank avgRankPyra
+from (select @ctr2:=0) init, RanksSingle s join RanksAverage a on s.personId = a.personId and s.eventId = a.eventId join Persons p on s.personId = p.id
+where s.eventId = 'pyram' and s.worldRank <= 100
+order by s.worldRank) pyr
+where two.ctr = pyr.ctr;

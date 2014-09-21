@@ -1,0 +1,9 @@
+select round(v/100,2) time, count(*) number_of_times from(
+select value1 v from Results join Events on Events.id=eventId where Events.format='time' and value1>0 union all
+select value2 v from Results join Events on Events.id=eventId where Events.format='time' and value2>0 union all
+select value3 v from Results join Events on Events.id=eventId where Events.format='time' and value3>0 union all
+select value4 v from Results join Events on Events.id=eventId where Events.format='time' and value4>0 union all
+select value5 v from Results join Events on Events.id=eventId where Events.format='time' and value5>0) tmp
+group by v
+order by 2 desc
+limit 100;

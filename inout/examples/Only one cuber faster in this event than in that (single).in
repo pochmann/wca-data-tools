@@ -1,0 +1,9 @@
+ALTER TABLE RanksSingle ADD INDEX person (personId ASC);
+
+SELECT a.personId Cuber, a.eventId 'Faster', a.best 'Time', b.eventId 'Slower', b.best 'Time'
+FROM RanksSingle a join RanksSingle b on a.personId = b.personId
+WHERE a.best < b.best
+GROUP BY a.eventId, b.eventId
+HAVING count(*) = 1;
+
+ALTER TABLE RanksSingle DROP INDEX person;

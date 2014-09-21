@@ -1,0 +1,13 @@
+CREATE TABLE participations
+SELECT distinct Results.personId, competitionId
+FROM Results
+WHERE personId in (SELECT personId FROM Results GROUP BY personId HAVING count(distinct competitionId)>=50);
+
+SELECT a.personId, b.personId, c.personId, count(*) competitions
+FROM participations a, participations b, participations c
+WHERE a.competitionId=b.competitionId and a.competitionId=c.competitionId and a.personId<b.personId and b.personId<c.personId
+GROUP BY a.personId, b.personId, c.personId
+HAVING competitions>=50
+ORDER BY competitions desc;
+
+DROP TABLE participations;

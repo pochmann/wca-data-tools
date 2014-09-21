@@ -1,0 +1,14 @@
+SELECT name, personId, count(*) close, group_concat(eventId) events, sum(sr+ar) ranksum
+FROM
+(
+SELECT s.personId, s.eventId, s.worldRank sr, a.worldRank ar
+FROM
+(SELECT personId, eventId, worldRank FROM rankssingle) s,
+(SELECT personId, eventId, worldRank FROM ranksaverage) a
+WHERE s.personId = a.personId AND s.eventId = a.eventId
+AND a.worldRank >= 0.99 * s.worldRank AND a.worldRank <= 1.01 * s.worldRank
+) tmp, Persons
+WHERE tmp.personId = Persons.id
+GROUP BY personId
+ORDER BY close desc, ranksum desc
+LIMIT 100

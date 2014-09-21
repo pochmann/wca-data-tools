@@ -1,0 +1,5 @@
+select count(*) competitions, substring_index(cityName, ',', 1) city, countryId
+from Competitions
+where date(year*10000+month*100+day) <= date(now())
+group by city, countryId
+order by competitions desc, city

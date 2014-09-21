@@ -1,0 +1,19 @@
+SELECT
+  year Year,
+  solves+DNFs Attempts,
+  concat(round(100*DNFs/(solves+DNFs), 2), '%') DNFs,
+  round(total/solves/100, 2) Average,
+  round(best/100, 2) Best,
+  round(worst/100, 2) Worst
+FROM
+(SELECT
+  year,
+  sum((value1>0)+(value2>0)+(value3>0)+(value4>0)+(value5>0)) solves,
+  sum((value1=-1)+(value2=-1)+(value3=-1)+(value4=-1)+(value5=-1)) DNFs,
+  sum(if(value1>0,value1,0)+if(value2>0,value2,0)+if(value3>0,value3,0)+if(value4>0,value4,0)+if(value5>0,value5,0)) total,
+  min(least(if(value1>0,value1,999999),if(value2>0,value2,999999),if(value3>0,value3,999999),if(value4>0,value4,999999),if(value5>0,value5,999999))) best,
+  max(greatest(value1,value2,value3,value4,value5)) worst
+FROM Results JOIN Competitions ON Competitions.id = competitionId
+WHERE eventId = '333bf'
+GROUP BY year) tmp
+ORDER BY year;

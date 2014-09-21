@@ -1,0 +1,6 @@
+SELECT sum((ifnull(regionalSingleRecord,'')='WR')+(ifnull(regionalAverageRecord,'')='WR')) WRs, personName Name, group_concat(distinct Events.cellName separator ', ') Events, sum((regionalSingleRecord like '%R')+(regionalAverageRecord like '%R'))
+FROM Results JOIN Events ON Events.id = eventId
+WHERE regionalSingleRecord like '%R' or regionalAverageRecord like '%R'
+GROUP BY personId
+HAVING WRs and WRs = sum((ifnull(regionalSingleRecord,'') like '%R')+(ifnull(regionalAverageRecord,'') like '%R'))
+ORDER BY WRs desc, Events;

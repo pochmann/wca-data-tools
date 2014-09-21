@@ -1,0 +1,4 @@
+SELECT competitionId Competition, count(distinct personId) ChineseCompetitors
+FROM Results
+WHERE competitionId rlike '^WC' AND personCountryId = 'China'
+GROUP BY competitionId

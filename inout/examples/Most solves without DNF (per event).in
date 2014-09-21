@@ -1,0 +1,18 @@
+CREATE TABLE DNFless
+SELECT
+  personId,
+  eventId,
+  sum((value1>0)+(value2>0)+(value3>0)+(value4>0)+(value5>0)) solves
+FROM Results
+GROUP BY personId, eventId
+HAVING sum((value1=-1)+(value2=-1)+(value3=-1)+(value4=-1)+(value5=-1)) = 0;
+
+SELECT tmp.eventId Event, max_solves Solves, group_concat(concat(personId,'#',tmp.eventId) separator ', ') Who
+FROM DNFless
+     join (SELECT eventId, max(solves) max_solves FROM DNFless GROUP BY eventId) tmp
+     on DNFless.eventId=tmp.eventId and solves=max_solves
+	   join Events on Events.id=tmp.eventId
+GROUP BY tmp.eventId
+ORDER BY rank;
+
+DROP TABLE DNFless;

@@ -1,0 +1,6 @@
+SELECT substring_index(name, ' ', 1) Name, count(*) Persons
+FROM Persons
+WHERE countryId = 'Brazil'
+GROUP BY 1
+ORDER BY Persons desc
+LIMIT 10

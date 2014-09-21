@@ -1,0 +1,14 @@
+SELECT competitionId, gap_times, all_times, round(gap_times/all_times*100,3) percentage FROM(
+SELECT competitionId, sum(
+  (value1>0 and value1<60000 and mod(value1,25)in(1,4,7,10,12,14,17,20,23,24)) +
+  (value2>0 and value2<60000 and mod(value2,25)in(1,4,7,10,12,14,17,20,23,24)) +
+  (value3>0 and value3<60000 and mod(value3,25)in(1,4,7,10,12,14,17,20,23,24)) +
+  (value4>0 and value4<60000 and mod(value4,25)in(1,4,7,10,12,14,17,20,23,24)) +
+  (value5>0 and value5<60000 and mod(value5,25)in(1,4,7,10,12,14,17,20,23,24))
+  ) gap_times,
+  sum((value1>0 and value1<60000)+(value2>0 and value2<60000)+(value3>0 and value3<60000)+(value4>0 and value4<60000)+(value5>0 and value5<60000)) all_times
+FROM Results, Events
+WHERE competitionId rlike '^WC[0-9]{4}$'
+AND Events.id = eventId AND Events.format = 'time'
+GROUP BY competitionId) tmp
+ORDER BY competitionId;

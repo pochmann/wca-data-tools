@@ -1,0 +1,6 @@
+SELECT personId Ambassador, personCountryId Country, count(distinct competitionId) Competitions
+FROM Results join Competitions on Competitions.id=competitionId
+WHERE personCountryId<>'USA' and Competitions.countryId='USA'
+GROUP BY personId, personCountryId
+HAVING Competitions >= 5
+ORDER BY Competitions desc;
