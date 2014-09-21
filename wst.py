@@ -103,9 +103,9 @@ def create_post(infile, column_names, rows):
 
     # Produce the out-file
     #ctr, rank = 0, None
-    with open(outfile, 'w', encoding='utf8') as outfile:
-        print('[SPOILER="' + name + '"]' + note + '\n\n[TABLE="class:grid,align:left"]', file=outfile)
-        print('[TR][TD][B]' + '[/B][/TD][TD][B]'.join(n.split('[')[0] for n in column_names) + '[/B][/TD][/TR]', file=outfile)
+    with open(outfile, 'w', encoding='utf8') as out:
+        print('[SPOILER="' + name + '"]' + note + '\n\n[TABLE="class:grid,align:left"]', file=out)
+        print('[TR][TD][B]' + '[/B][/TD][TD][B]'.join(n.split('[')[0] for n in column_names) + '[/B][/TD][/TR]', file=out)
         for row in rows:
             tr = '[TR]'
             for column_name, value in zip(column_names, row):
@@ -127,8 +127,8 @@ def create_post(infile, column_names, rows):
                     align_right = True
                 td = '[TD="align:right"]' if align_right else '[TD]'
                 tr += td + str(value) + '[/TD]'
-            print(tr + '[/TR]', file=outfile)
-        print('[/TABLE]' + source_spoiler + '[/SPOILER]', file=outfile)
+            print(tr + '[/TR]', file=out)
+        print('[/TABLE]' + source_spoiler + '[/SPOILER]', file=out)
 
 def auto_person(match):
     personId, addon = match.groups()
