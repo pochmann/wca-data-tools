@@ -84,13 +84,16 @@ def link(id):
 
 def create_post(infile, column_names, rows):
     if os.path.isfile(infile):
-        name, ext = os.path.splitext(os.path.basename(infile))
+        dirname, basename = os.path.split(infile)
+        name, ext = os.path.splitext(basename)
+        outfile = os.path.join(dirname, name + '.out')
         #name, sourcetype = infile.split('.')
         sourcetype = {'.in': 'SQL', '.py': 'Python'}[ext]
         source = open(infile).read().strip()
         source_spoiler = '\n\n[SPOILER="' + sourcetype + '"][CODE][NOPARSE]' + source + '[/NOPARSE][/CODE][/SPOILER]'
     else:
         name = infile
+        outfile = os.path.join('inout', name + '.out')
         source_spoiler = ''
 
     # Prepare a note
@@ -100,7 +103,7 @@ def create_post(infile, column_names, rows):
 
     # Produce the out-file
     #ctr, rank = 0, None
-    with open(os.path.join('inout', name + '.out'), 'w', encoding='utf8') as outfile:
+    with open(outfile, 'w', encoding='utf8') as outfile:
         print('[SPOILER="' + name + '"]' + note + '\n\n[TABLE="class:grid,align:left"]', file=outfile)
         print('[TR][TD][B]' + '[/B][/TD][TD][B]'.join(n.split('[')[0] for n in column_names) + '[/B][/TD][/TR]', file=outfile)
         for row in rows:

@@ -53,23 +53,26 @@ def process_statistics():
     print('processing statistics ...')
 
     # Process the query in-files
-    for infile in glob.glob(os.path.join('inout', '*.in')):
-        name = os.path.splitext(os.path.basename(infile))[0]
-        outfile = os.path.join('inout', name + '.out')
+    for (dirpath, dirnames, filenames) in os.walk('inout'):
+        for filename in filenames:
+            if filename.endswith('.in'):
+                name = os.path.splitext(filename)[0]
+                infile = os.path.join(dirpath, filename)
+                outfile = os.path.join(dirpath, name + '.out')
 
-        # If out-file is missing or older than in-file...
-        if not os.path.isfile(outfile) or os.path.getmtime(outfile) < os.path.getmtime(infile):
-            print(' ', name, '...')
+                # If out-file is missing or older than in-file...
+                if not os.path.isfile(outfile) or os.path.getmtime(outfile) < os.path.getmtime(infile):
+                    print(' ', name, '...')
 
-            # Execute the query
-            query = open(infile).read().strip()
-            for result in cursor.execute(query, multi=True):
-                if result.with_rows:
-                    column_names = list(result.column_names)
-                    rows = list(result)
+                    # Execute the query
+                    query = open(infile).read().strip()
+                    for result in cursor.execute(query, multi=True):
+                        if result.with_rows:
+                            column_names = list(result.column_names)
+                            rows = list(result)
 
-            # Produce the out-file
-            create_post(infile, column_names, rows)
+                    # Produce the out-file
+                    create_post(infile, column_names, rows)
 
 # Connect to the database
 cnx = mysql.connector.connect(**config['mysql'])
