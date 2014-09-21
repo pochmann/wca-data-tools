@@ -1,4 +1,4 @@
 /inout/**/*.out
 zzz*
 __pycache__
-/config.py
+/internal/config.py
